@@ -43,7 +43,7 @@ public class Player {
 		lives += gainedLives;
 	}
 	
-	public void update(int livesLost) {
+	public void update() {
 	}
 	
 	public void draw(Graphics g) {

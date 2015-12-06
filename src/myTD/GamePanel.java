@@ -16,16 +16,16 @@ public class GamePanel extends JPanel implements Runnable,
 												MouseMotionListener{
 	
 	//Constant members
-	public static final int WIDTH = 15;			//Width in tiles
-	public static final int HEIGHT = 15;			//Height in tiles
+	public final int WIDTH = 15;			//Width in tiles
+	public final int HEIGHT = 15;			//Height in tiles
 	
-	public static final int PIXEL_WIDTH = 600;		//Width in pixels
-	public static final int PIXEL_HEIGHT = 600;	//Height in pixels
+	public final int PIXEL_WIDTH = 600;		//Width in pixels
+	public final int PIXEL_HEIGHT = 600;	//Height in pixels
 	
-	public static final int TILE_SIZE = PIXEL_WIDTH / WIDTH;
+	public final int TILE_SIZE = PIXEL_WIDTH / WIDTH;
 	
-	private static final int START_MONEY = 200;
-	private static final int START_LIVES = 10;
+	private final int START_MONEY = 200;
+	private final int START_LIVES = 10;
 	
 	private static int FPS = 30;					//FPS cap
 	
@@ -67,7 +67,7 @@ public class GamePanel extends JPanel implements Runnable,
 	
 	public void update() {
 		eManager.update();
-		player.update(eManager.getLivesLost());
+		player.update();
 		tManager.update(mouseX, mouseY, eManager.getLiveEnemies());
 	}
 	

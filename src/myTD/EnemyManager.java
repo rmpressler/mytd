@@ -6,67 +6,58 @@ import java.util.ArrayList;
 
 public class EnemyManager {
 	
-	private boolean spawning;
+	//**************Fields****************
+	
+	//Enemy-related variables
+	private Enemy[] wave;					//Holds the wave's Enemy s
+	private ArrayList<Enemy> liveEnemies;	//Tracks current live enemies
+	
+	//State variables
 	private boolean running;
 	private int currentWave;
-	private int totalWaves = 0;
-	private int startTile;
-	private int tileSize;
+	private int totalWaves;
 	private int timer;
-	private ArrayList<Enemy[]> activeWaves;
-	private ArrayList<Enemy> liveEnemies;
+	
+	private int numLiveEnemies;
+	
+	//Spawn-related variables
+	private boolean spawning;
 	private long lastSpawn;
 	private int spawnCounter;
 	
-	private int rewardMoney;
-	
-	private int numLiveEnemies;
-	private int runningWaves;
-	private int livesLost;
-	
+	//Map details
+	private int startTile;
+	private int tileSize;
 	private int mapWidth;
-	private int mapHeight;
 	private int[] xCorners;
 	private int[] yCorners;
 	
 	private Player player;
-	private TDMap tileMap;
 	
 	public EnemyManager(TDMap newTileMap, GamePanel game, Player newPlayer) {
 		startTile = newTileMap.getStart();
 		tileSize = game.TILE_SIZE;
 		
+		totalWaves = 10;
+		
 		player = newPlayer;
-		tileMap = newTileMap;
 		
 		mapWidth = game.PIXEL_WIDTH;
-		mapHeight = game.PIXEL_HEIGHT;
 		
-		livesLost = 0;
+		wave = null;
 		
 		spawning = false;
 		
 		timer = 0;
-		activeWaves = new ArrayList<Enemy[]>();
 		liveEnemies = new ArrayList<Enemy>();
 		
 		lastSpawn = System.nanoTime();
 		spawnCounter = 0;
-		
-		rewardMoney = 0;
 	}
 	
 	public void setCorners(int[] newXCorners, int[] newYCorners) {
 		xCorners = newXCorners;
 		yCorners = newYCorners;
-	}
-	
-	public int getLivesLost() {
-		return livesLost;
-	}
-	
-	public void resetLivesLost() {
-		livesLost = 0;
 	}
 	
 	public void setWaves(int i) {
@@ -110,7 +101,7 @@ public class EnemyManager {
 			type = 2;
 		}
 			
-		Enemy[] wave = new Enemy[enemies];
+		wave = new Enemy[enemies];
 		
 		for(int i = 0; i < enemies; i++) {
 			wave[i] = new Enemy(type, tileSize);
@@ -118,13 +109,8 @@ public class EnemyManager {
 		for(int i = 0; i < enemies; i++) {
 			wave[i].setCorners(xCorners, yCorners);
 		}
-
-		activeWaves.add(wave);
 		
-		if(currentWave == 2) {
-			currentWave = 0;
-		}
-		else {
+		if(currentWave < totalWaves) {
 			currentWave++;
 		}
 	}
@@ -145,11 +131,9 @@ public class EnemyManager {
 		
 		int enemyCount = 0;
 		
+		//Spawning logic
 		if(spawning) {
-			Enemy[] wave = activeWaves.get(activeWaves.size() - 1);
-			
 			if((System.nanoTime() - lastSpawn) / 1000000 >= 2000) {
-				System.out.println("Spawning enemy " + spawnCounter);
 				wave[spawnCounter].spawn(0, startTile);
 				liveEnemies.add(wave[spawnCounter]);
 				numLiveEnemies++;
@@ -163,45 +147,38 @@ public class EnemyManager {
 			}
 		}
 		
-		if(!activeWaves.isEmpty()) {
-			//Update all enemies currently being tracked
-			//for(Enemy[] enemy: activeWaves) {
-			for(int count = 0; count < activeWaves.size(); count++) {
-				Enemy[] enemy = activeWaves.get(count);
-				
-				int waveEnemyCount = 0;
-				
-				for(int i = 0;i < enemy.length;i++) {
-					if(enemy[i].getX() >= mapWidth && enemy[i].isAlive()) {
-						enemy[i].die(false);
-						liveEnemies.remove(enemy[i]);
-						player.loseLives(1);
-					}
-					else if(!enemy[i].isAlive()) {
-						if(enemy[i].justDied()) {
-							liveEnemies.remove(enemy[i]);
-							int reward = enemy[i].getReward();
-							player.addMoney(reward);
-							enemy[i].reset();
-						}
-					}
-					
-					if(enemy[i].isAlive()) {
-						waveEnemyCount++;
-						enemy[i].update();
+		//Update all enemies currently being tracked
+		int waveEnemyCount = 0;
+		if(wave != null) {
+			for(int i = 0;i < wave.length;i++) {
+				if(wave[i].getX() >= mapWidth && wave[i].isAlive()) {
+					wave[i].die(false);
+					liveEnemies.remove(wave[i]);
+					player.loseLives(1);
+				}
+				else if(!wave[i].isAlive()) {
+					if(wave[i].justDied()) {
+						liveEnemies.remove(wave[i]);
+						int reward = wave[i].getReward();
+						player.addMoney(reward);
+						wave[i].reset();
 					}
 				}
 				
-				if(waveEnemyCount == 0) {
-					activeWaves.remove(count);
+				if(wave[i].isAlive()) {
+					waveEnemyCount++;
+					wave[i].update();
 				}
-				
-				enemyCount += waveEnemyCount;
 			}
+			
+			if(waveEnemyCount == 0) {
+				wave = null;
+			}
+			
+			enemyCount += waveEnemyCount;
 			numLiveEnemies = enemyCount;
 		}
-		
-		if(activeWaves.size() == 0) {
+		else {
 			timer++;
 		}
 	}
@@ -216,10 +193,10 @@ public class EnemyManager {
 			return;
 		}
 		
-		for(Enemy[] enemy: activeWaves) {
-			for(int i = 0;i < enemy.length;i++) {
-				if(enemy[i].isAlive() && enemy[i].isSpawned()) {
-					enemy[i].draw(g);
+		if(wave != null) {
+			for(int i = 0;i < wave.length;i++) {
+				if(wave[i].isAlive() && wave[i].isSpawned()) {
+					wave[i].draw(g);
 				}
 			}
 		}

@@ -218,12 +218,16 @@ public class Enemy {
 	}
 	
 	public void spawn(int newXTile, int newYTile) {
+		//Get the spawning coordinates of spawn tile
 		int newX = (int)(Math.random() * (tileSize - getSize()));
 		int newY = (int)((Math.random() * (tileSize - getSize())) + (tileSize * newYTile));
 		
+		//Assign pixel coordinates
 		x = newX;
-		spawnX = x % tileSize;
 		y = newY;
+		
+		//Assign pixel coordinates WITHIN tile
+		spawnX = x % tileSize;
 		spawnY = y % tileSize;
 		
 		setDirection();
