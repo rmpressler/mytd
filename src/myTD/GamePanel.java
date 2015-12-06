@@ -76,7 +76,7 @@ public class GamePanel extends JPanel implements Runnable,
 		eManager.draw(graphicsBuffer);
 		tManager.draw(graphicsBuffer);
 		player.draw(graphicsBuffer);
-		graphicsBuffer.setColor(Color.BLACK);
+		//graphicsBuffer.setColor(Color.BLACK);
 		//graphicsBuffer.drawString("FPS: " + averageFPS, 20, 30);
 	}
 	
@@ -92,8 +92,6 @@ public class GamePanel extends JPanel implements Runnable,
 		
 		tileMap = new TDMap(PIXEL_WIDTH, PIXEL_HEIGHT, TILE_SIZE, false);
 		tileMap.loadMap("C:\\Users\\r.pressler\\Java\\Games Workspace\\myTD\\largemap.tdm");
-		int[] xCorners = tileMap.getXCorners();
-		int[] yCorners = tileMap.getYCorners();
 		
 		image = new BufferedImage(PIXEL_WIDTH, PIXEL_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		graphicsBuffer = (Graphics2D) image.getGraphics();
@@ -102,7 +100,6 @@ public class GamePanel extends JPanel implements Runnable,
 		
 		eManager = new EnemyManager(tileMap, this, player);
 		eManager.start();
-		eManager.setCorners(xCorners, yCorners);
 		
 		tManager = new TowerManager(PIXEL_WIDTH, PIXEL_HEIGHT, TILE_SIZE, player);
 		

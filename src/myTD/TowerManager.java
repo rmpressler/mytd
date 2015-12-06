@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class TowerManager implements MouseListener {
 	ArrayList<Tower> towers;
 	Tower placingTower;
+	EnemyManager eManager;
 	private boolean placing;
 	private int tileSize;
 	private int balance;

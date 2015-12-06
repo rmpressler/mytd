@@ -25,6 +25,8 @@ public class Enemy {
 	private boolean spawned;			//Set to true once spawn() is called and false once dead
 	private boolean justDied;			//Set to true in the frame that it died, then false after.
 	
+	private TDMap tileMap;				//Hold reference to tileMap being used in game.
+	
 	private int tileSize;				//Tile size in px for calculating corner destinations
 	private int xCorners[];				//Holds the x coordinate of each target corner in TILES
 	private int yCorners[];				//Holds the y coordinate of each target corner in TILES
@@ -35,7 +37,7 @@ public class Enemy {
 	
 	//**************Constructor**************
 	
-	public Enemy(int rank, int newTileSize) {
+	public Enemy(int rank, int newTileSize, TDMap tMap) {		
 		switch(rank) {
 			case 0:
 				color = Color.GREEN.darker();
@@ -69,6 +71,11 @@ public class Enemy {
 				break;
 		}
 		
+		tileMap = tMap;
+		
+		xCorners = tileMap.getXCorners();
+		yCorners = tileMap.getYCorners();
+		
 		tileSize = newTileSize;
 		r = tileSize / 3;
 		
@@ -78,6 +85,8 @@ public class Enemy {
 		spawned = false;
 		isAlive = true;
 	}
+	
+	//********************Update and draw*********************
 	
 	public void update() {
 		//If dead, don't bother updating
@@ -161,11 +170,6 @@ public class Enemy {
 	
 	//***************Setters*******************
 	
-	public void setCorners(int[] newXCorners, int[] newYCorners) {
-		xCorners = newXCorners;
-		yCorners = newYCorners;
-	}
-	
 	public void setDirection() {
 		if(currentCorner == xCorners.length) {
 			direction = "right";
@@ -217,10 +221,10 @@ public class Enemy {
 		return isAlive;
 	}
 	
-	public void spawn(int newXTile, int newYTile) {
+	public void spawn() {
 		//Get the spawning coordinates of spawn tile
 		int newX = (int)(Math.random() * (tileSize - getSize()));
-		int newY = (int)((Math.random() * (tileSize - getSize())) + (tileSize * newYTile));
+		int newY = (int)((Math.random() * (tileSize - getSize())) + (tileSize * tileMap.getStart()));
 		
 		//Assign pixel coordinates
 		x = newX;

@@ -1,6 +1,5 @@
 package myTD;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
@@ -10,39 +9,31 @@ public class EnemyManager {
 	
 	//Enemy-related variables
 	private Enemy[] wave;					//Holds the wave's Enemy s
-	private ArrayList<Enemy> liveEnemies;	//Tracks current live enemies
+	private ArrayList<Enemy> liveEnemies;	// TODO Find a better way to do this
 	
 	//State variables
-	private boolean running;
-	private int currentWave;
-	private int totalWaves;
-	private int timer;
-	
-	private int numLiveEnemies;
+	private boolean running;				//True when start() is called
+	private int currentWave;				//Current wave #
+	private int totalWaves;					//Total waves to spawn
+	private int timer;						//Times spawning of next wave
 	
 	//Spawn-related variables
-	private boolean spawning;
-	private long lastSpawn;
-	private int spawnCounter;
-	
-	//Map details
-	private int startTile;
-	private int tileSize;
-	private int mapWidth;
-	private int[] xCorners;
-	private int[] yCorners;
+	private boolean spawning;				//True while enemies are being sent
+	private long lastSpawn;					//nanoTime() of last spawn; used by spawn timer
+	private int spawnCounter;				//keeps track of which enemy in wave[] is being spawned
 	
 	private Player player;
+	private GamePanel game;
+	private TDMap tileMap;
 	
-	public EnemyManager(TDMap newTileMap, GamePanel game, Player newPlayer) {
-		startTile = newTileMap.getStart();
-		tileSize = game.TILE_SIZE;
+	//*****************Constructor*****************
+	
+	public EnemyManager(TDMap newTileMap, GamePanel newGame, Player newPlayer) {
+		game = newGame;
+		player = newPlayer;
+		tileMap = newTileMap;
 		
 		totalWaves = 10;
-		
-		player = newPlayer;
-		
-		mapWidth = game.PIXEL_WIDTH;
 		
 		wave = null;
 		
@@ -55,23 +46,93 @@ public class EnemyManager {
 		spawnCounter = 0;
 	}
 	
-	public void setCorners(int[] newXCorners, int[] newYCorners) {
-		xCorners = newXCorners;
-		yCorners = newYCorners;
-	}
+	//********************Update and draw*********************
 	
-	public void setWaves(int i) {
+	public void update() {
+		
+		//Do nothing if GameManager is not running
 		if(!running) {
-			totalWaves = i;
+			return;
+		}
+		
+		//300 frames = 10 seconds
+		//create and send next wave
+		if(timer == 300) {
+			timer = 0;
+			sendWave();
+		}
+		
+		//Spawning logic
+		if(spawning) {
+			//Wait two seconds between each unit
+			if((System.nanoTime() - lastSpawn) / 1000000 >= 2000) {
+				wave[spawnCounter].spawn();
+				liveEnemies.add(wave[spawnCounter]);
+				spawnCounter++;
+				lastSpawn = System.nanoTime();
+				
+				if(spawnCounter == wave.length) {
+					spawnCounter = 0;
+					spawning = false;
+				}
+			}
+		}
+		
+		//Update all enemies currently being tracked
+		int waveEnemyCount = 0;
+		if(wave != null) {
+			for(int i = 0;i < wave.length;i++) {
+				//If off-screen and alive, kill and lose life
+				if(wave[i].getX() >= game.PIXEL_WIDTH && wave[i].isAlive()) {
+					wave[i].die(false);
+					liveEnemies.remove(wave[i]);
+					player.loseLives(1);
+				}
+				//If just died, remove enemy and credit reward to player
+				else if(wave[i].justDied()) {
+					liveEnemies.remove(wave[i]);
+					player.addMoney(wave[i].getReward());
+					wave[i].reset();
+				}
+				
+				if(wave[i].isAlive()) {
+					waveEnemyCount++;
+					wave[i].update();
+				}
+			}
+			
+			if(waveEnemyCount == 0) {
+				wave = null;
+			}
 		}
 		else {
-			System.out.println("Cannot set waves while EnemyManager is running.");
+			timer++;
+		}
+	}
+
+	public void draw(Graphics g) {
+		//If enemy manager hasn't been started, do nothing.
+		if(!running) {
+			return;
+		}
+		
+		//If there's a wave alive, draw each enemy
+		if(wave != null) {
+			for(int i = 0;i < wave.length;i++) {
+				if(wave[i].isAlive() && wave[i].isSpawned()) {
+					wave[i].draw(g);
+				}
+			}
 		}
 	}
 	
-	public int getnumLiveEnemies() {
-		return numLiveEnemies;
+	//**************Getters*****************
+	
+	public ArrayList<Enemy> getLiveEnemies() {
+		return liveEnemies;
 	}
+	
+	//***************Game methods*****************
 	
 	public void start() {
 		running = true;
@@ -81,7 +142,6 @@ public class EnemyManager {
 		running = false;
 	}
 	
-	//Add new wave to queue [activeWaves]
 	private void sendWave() {
 		spawning = true;
 		
@@ -100,113 +160,19 @@ public class EnemyManager {
 			enemies = 3;
 			type = 2;
 		}
+		else if(currentWave == 3) {
+			enemies = 4;
+			type = 3;
+		}
 			
 		wave = new Enemy[enemies];
 		
 		for(int i = 0; i < enemies; i++) {
-			wave[i] = new Enemy(type, tileSize);
-		}
-		for(int i = 0; i < enemies; i++) {
-			wave[i].setCorners(xCorners, yCorners);
+			wave[i] = new Enemy(type, game.TILE_SIZE, tileMap);
 		}
 		
 		if(currentWave < totalWaves) {
 			currentWave++;
 		}
 	}
-	
-	public void update() {
-		
-		//Do nothing if GameManager is not running
-		if(!running) {
-			return;
-		}
-		
-		//300 frames = 10 seconds
-		//create and send next wave
-		if(timer == 300) {
-			timer = 0;
-			sendWave();
-		}
-		
-		int enemyCount = 0;
-		
-		//Spawning logic
-		if(spawning) {
-			if((System.nanoTime() - lastSpawn) / 1000000 >= 2000) {
-				wave[spawnCounter].spawn(0, startTile);
-				liveEnemies.add(wave[spawnCounter]);
-				numLiveEnemies++;
-				spawnCounter++;
-				lastSpawn = System.nanoTime();
-				
-				if(spawnCounter == wave.length) {
-					spawnCounter = 0;
-					spawning = false;
-				}
-			}
-		}
-		
-		//Update all enemies currently being tracked
-		int waveEnemyCount = 0;
-		if(wave != null) {
-			for(int i = 0;i < wave.length;i++) {
-				if(wave[i].getX() >= mapWidth && wave[i].isAlive()) {
-					wave[i].die(false);
-					liveEnemies.remove(wave[i]);
-					player.loseLives(1);
-				}
-				else if(!wave[i].isAlive()) {
-					if(wave[i].justDied()) {
-						liveEnemies.remove(wave[i]);
-						int reward = wave[i].getReward();
-						player.addMoney(reward);
-						wave[i].reset();
-					}
-				}
-				
-				if(wave[i].isAlive()) {
-					waveEnemyCount++;
-					wave[i].update();
-				}
-			}
-			
-			if(waveEnemyCount == 0) {
-				wave = null;
-			}
-			
-			enemyCount += waveEnemyCount;
-			numLiveEnemies = enemyCount;
-		}
-		else {
-			timer++;
-		}
-	}
-	
-	public ArrayList<Enemy> getLiveEnemies() {
-		return liveEnemies;
-	}
-	
-	public void draw(Graphics g) {
-		
-		if(!running) {
-			return;
-		}
-		
-		if(wave != null) {
-			for(int i = 0;i < wave.length;i++) {
-				if(wave[i].isAlive() && wave[i].isSpawned()) {
-					wave[i].draw(g);
-				}
-			}
-		}
-		
-		g.setColor(Color.BLACK);
-//		g.drawString("Timer: " + timer / 30, 20,  40);
-//		g.drawString("Enemies: " + numLiveEnemies, 20, 50);
-//		g.drawString("Waves alive: " + activeWaves.size(), 20, 60);
-//		g.drawString("liveEnemies: " + liveEnemies.size(), 20, 80);
-		
-	}
-	
 }
