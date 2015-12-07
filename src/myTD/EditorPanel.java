@@ -1,10 +1,8 @@
 package myTD;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,6 +10,7 @@ import java.awt.event.ActionListener;
 
 public class EditorPanel extends JPanel {
 	
+	private static final long serialVersionUID = 1L;
 	JPanel buttonPanel;
 	JButton selectionButton;
 	JButton button0;

@@ -9,6 +9,8 @@ import java.awt.event.MouseMotionListener;
 public class TileEditorPanel extends JPanel implements MouseListener, 
 	MouseMotionListener {
 	
+	private static final long serialVersionUID = 1L;
+
 	TDMap tileMap;
 	
 	private static int WIDTH;

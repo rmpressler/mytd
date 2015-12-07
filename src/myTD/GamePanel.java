@@ -1,6 +1,5 @@
 package myTD;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -8,45 +7,51 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable, 
 												MouseListener, 
 												MouseMotionListener{
 	
-	//Constant members
-	public final int WIDTH = 15;			//Width in tiles
-	public final int HEIGHT = 15;			//Height in tiles
+	//**********************Fields************************
+
+	private static final long serialVersionUID = 1L;
 	
-	public final int PIXEL_WIDTH = 600;		//Width in pixels
-	public final int PIXEL_HEIGHT = 600;	//Height in pixels
+	//Constants
+	public final int WIDTH = 15;
+	public final int HEIGHT = 15;
+	
+	public final int PIXEL_WIDTH = 600;
+	public final int PIXEL_HEIGHT = 600;
 	
 	public final int TILE_SIZE = PIXEL_WIDTH / WIDTH;
 	
 	private final int START_MONEY = 500;
 	private final int START_LIVES = 10;
 	
-	private static int FPS = 30;					//FPS cap
+	private static int FPS = 30;				//FPS cap
 	
-	//Instanced members
-	private TDMap tileMap;		//Holds map data
+	//Game component objects
+	private TDMap tileMap;
+	private EnemyManager eManager;
+	private TowerManager tManager;
+	private Player player;
 	
-	private Thread thread;		//Main game loop thread
-	private boolean running;	//Flag tracking whether game running
+	//Thread related
+	private Thread thread;						//Main game loop thread
+	private boolean running;					//Flag tracking whether game running
 	
-	BufferedImage image;		//Back buffer
-	Graphics2D graphicsBuffer;	//Graphics context of image
+	//Graphics related
+	BufferedImage image;						//Back buffer - all writing is done to this
+	Graphics2D graphicsBuffer;					//Graphics context of screen (front buffer)
 	
-	double averageFPS;			//Actual FPS achieved
+	double averageFPS;							//Actual FPS achieved
 	
-	EnemyManager eManager;
-	TowerManager tManager;
-	TowerStore tStore;
-	Player player;
-	
+	//State variables
 	private int mouseX;
 	private int mouseY;
+	
+	//**********************Constructor************************
 	
 	public GamePanel() {
 		
@@ -54,16 +59,7 @@ public class GamePanel extends JPanel implements Runnable,
 		
 	}
 	
-	@Override
-	public void addNotify() {
-		
-		super.addNotify();
-		if(thread == null) {
-			thread = new Thread(this);
-			thread.start();
-		}
-		
-	}
+	//**********************Update and draw************************
 	
 	public void update() {
 		eManager.update();
@@ -75,8 +71,6 @@ public class GamePanel extends JPanel implements Runnable,
 		eManager.draw(graphicsBuffer);
 		tManager.draw(graphicsBuffer);
 		player.draw(graphicsBuffer);
-		//graphicsBuffer.setColor(Color.BLACK);
-		//graphicsBuffer.drawString("FPS: " + averageFPS, 20, 30);
 	}
 	
 	//Draws ImageBuffer to screen
@@ -85,15 +79,32 @@ public class GamePanel extends JPanel implements Runnable,
 		g.drawImage(image,  0,  0, null);
 		g.dispose();
 	}
-
+	
+	//**********************Game methods************************
+	
+	//Triggered when this is added to a component; starts game loop
+	@Override
+	public void addNotify() {
+		
+		super.addNotify();
+		if(thread == null) {
+			thread = new Thread(this);
+			thread.start();
+		}
+		
+	}
+	
+	//Called when thread starts, 
 	@Override
 	public void run() {
 		
-		tileMap = new TDMap(PIXEL_WIDTH, PIXEL_HEIGHT, TILE_SIZE, false);
-		tileMap.loadMap("C:\\Users\\r.pressler\\Java\\Games Workspace\\myTD\\largemap.tdm");
-		
+		//Create graphics buffer (back buffer)
 		image = new BufferedImage(PIXEL_WIDTH, PIXEL_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		graphicsBuffer = (Graphics2D) image.getGraphics();
+		
+		//Create map object and load map file
+		tileMap = new TDMap(PIXEL_WIDTH, PIXEL_HEIGHT, TILE_SIZE, false);
+		tileMap.loadMap("C:\\Users\\r.pressler\\Java\\Games Workspace\\myTD\\largemap.tdm");
 		
 		player = new Player(START_MONEY, START_LIVES);
 		
@@ -148,27 +159,10 @@ public class GamePanel extends JPanel implements Runnable,
 				frameCount++;
 			}
 		}
-		
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
+	//**********************Event handlers************************
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if(tManager.placing()) {
@@ -180,27 +174,22 @@ public class GamePanel extends JPanel implements Runnable,
 				tManager.placeTower();
 			}
 		}
-//		else {
-//			tManager.createTower(0, e.getX(), e.getY());
-//		}
 	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		mouseX = e.getX();
 		mouseY = e.getY();
 	}
 
+	@Override
+	public void mouseClicked(MouseEvent e) {}
+	@Override
+	public void mouseEntered(MouseEvent e) {}
+	@Override
+	public void mouseExited(MouseEvent e) {}
+	@Override
+	public void mouseReleased(MouseEvent e) {}
+	@Override
+	public void mouseDragged(MouseEvent e) {}
 }
