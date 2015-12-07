@@ -1,0 +1,29 @@
+commit 22a447b00c2ea8f7f332ce50c29766d7f291e4e4
+Author: Pressler <r.pressler@snhu.edu>
+Date:   Mon Dec 7 16:26:17 2015 -0500
+
+    Cleaned up TowerManager class
+
+commit 99af1fd725d91db5f2afee6e8370b1a00dbdae89
+Author: Pressler <r.pressler@snhu.edu>
+Date:   Mon Dec 7 15:47:08 2015 -0500
+
+    Cleaned up Tower class and added Nova tower
+
+commit 783c1fc2952f3cb0fee14d067b1e7b982f29a17d
+Author: Pressler <r.pressler@snhu.edu>
+Date:   Sun Dec 6 17:18:28 2015 -0500
+
+    Cleaned up EnemyManager and revised waves.
+
+commit 043bc992be213e2f13ee7529f47b3fdbbf4b78e8
+Author: Pressler <r.pressler@snhu.edu>
+Date:   Sun Dec 6 15:36:27 2015 -0500
+
+    Cleaned up Enemy class
+
+commit 241495992730fbf15bc0ef766377fda12d715437
+Author: Pressler <r.pressler@snhu.edu>
+Date:   Sat Dec 5 21:49:43 2015 -0500
+
+    Early working version

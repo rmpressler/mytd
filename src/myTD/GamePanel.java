@@ -67,7 +67,6 @@ public class GamePanel extends JPanel implements Runnable,
 	
 	public void update() {
 		eManager.update();
-		player.update();
 		tManager.update(mouseX, mouseY, eManager.getLiveEnemies());
 	}
 	

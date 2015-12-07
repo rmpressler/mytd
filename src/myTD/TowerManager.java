@@ -10,18 +10,18 @@ public class TowerManager implements MouseListener {
 	//******************Fields*****************
 	
 	//Properties
-	private int tileSize;
+	private int tileSize;				//Tile size in pixels from GamePanel
 	
 	//State data
-	ArrayList<Tower> towers;
-	Tower placingTower;
-	private boolean placing;
+	ArrayList<Tower> towers;			//Array containing current towers being tracked
+	Tower placingTower;					//Tower currently being placed by player.
+	private boolean placing;			//True when player is placing a tower.
 	
 	//References to related objects
-	private Player player;
+	private Player player;				//Reference to player for handling money.
 	
 	//Sub-components
-	TowerStore store;
+	TowerStore store;					//Store that is managed by this class
 	
 	//*****************Constructor*****************
 	
