@@ -3,32 +3,31 @@ package myTD;
 import java.awt.Graphics;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 
 public class TDMap {
 	
-	//Global members for storing width and height in tiles
-	private int width;
-	private int height;
-	private int pixelWidth;
-	private int pixelHeight;
-	private int tileSize;
+	//**********************Fields************************
 	
-	//Stores int values representing the tile types
-	private int tiles[][];
+	//Properties
+	private int width;				//Width in tiles
+	private int height;				//Height in tiles
+	private int pixelWidth;			//Width in pixels
+	private int pixelHeight;		//Height in pixels
+	private int tileSize;			//Tile size in pixels
+	private int start;				//Starting tile y coordinate (x is always 0)
+	private int tiles[][];			//Stores int values representing the tile types
 	
-	private boolean editorMode;
+	ArrayList<Integer> xCorners;	//x coordinates of each corner in tiles
+	ArrayList<Integer> yCorners;	//y coordinates of each corner in tiles
 	
-	private int start;
-	private int end;
+	//State variables
+	private boolean editorMode;		//true if map is loaded into Editor object
 	
-	ArrayList<Integer> xCorners;
-	ArrayList<Integer> yCorners;
+	//**********************Constructor************************
 	
-	// Constructor
 	public TDMap(int newWidth, int newHeight, int newTileSize, boolean isEditorMode) {
 		
 		//Set fields
@@ -55,6 +54,22 @@ public class TDMap {
 		
 	}
 	
+	//**********************Update and draw************************
+	
+	public void draw(Graphics g) {
+		for(int i = 0; i < width; i++) {
+			for(int j = 0; j < height; j++) {
+				g.setColor(Tile.getColor(tiles[i][j]));
+				g.fillRect(i * this.tileSize, 
+						j * this.tileSize, 
+						this.tileSize, 
+						this.tileSize);
+			}
+		}
+	}
+	
+	//**********************Getters************************
+	
 	public int getWidth() {
 		return tiles.length;
 	}
@@ -63,31 +78,8 @@ public class TDMap {
 		return tiles[0].length;
 	}
 	
-	//Sets a tile type located at (i, j)
-	public void setTile(int i, int j, int type) {
-		tiles[i][j] = type;
-	}
-	
-	//Finds path tile on left edge of map
 	public int getStart() {
 		return start;
-	}
-	
-	public boolean isPath(int thisX, int thisY) {
-		return tiles[thisX][thisY] == Tile.PATH;
-	}
-	
-	public int[] getNextCorner(int lastCorner) {
-		if(lastCorner + 1 >= xCorners.size()) {
-			return new int[1];
-		}
-		
-		int[] coords = new int[2];
-		coords[0] = xCorners.get(lastCorner + 1);
-		coords[1] = yCorners.get(lastCorner + 1);
-		
-		return coords;
-		
 	}
 	
 	public int[] getXCorners() {
@@ -106,6 +98,37 @@ public class TDMap {
 		}
 		
 		return returnValue;
+	}
+	
+	public int getTileSize() {
+		return tileSize;
+	}
+	
+	//**********************Setters************************
+	
+	//Sets a tile type located at (i, j)
+	public void setTile(int i, int j, int type) {
+		tiles[i][j] = type;
+	}
+	
+	//**********************Game methods************************
+	
+	//Detects if tile at (thisX, thisY) is a Tile.PATH tile 
+	public boolean isPath(int thisX, int thisY) {
+		return tiles[thisX][thisY] == Tile.PATH;
+	}
+	
+	//returns [0] = x and [1] = y coordinates of next corner
+	public int[] getNextCorner(int lastCorner) {
+		if(lastCorner + 1 >= xCorners.size()) {
+			return new int[1];
+		}
+		
+		int[] coords = new int[2];
+		coords[0] = xCorners.get(lastCorner + 1);
+		coords[1] = yCorners.get(lastCorner + 1);
+		
+		return coords;
 	}
 	
 	//Fills the tiles[][] array from a FileReader. Only called by
@@ -132,6 +155,7 @@ public class TDMap {
 		}
 		height = Integer.parseInt(buffer);
 		
+		//Throw error if wrong map size
 		if(width * tileSize != pixelWidth || height * tileSize != pixelHeight) {
 			throw new Exception("Map file represents a " +
 								width + 
@@ -167,11 +191,9 @@ public class TDMap {
 		}
 		
 		//detect corners
-		int start = getStart();
 		int xRunner = 0;
 		int yRunner = start;
 		String direction = "right";
-		String prevDirection = "right";
 		
 		boolean[][] visited = new boolean[width][height];
 		for(int i = 0; i < width;i++) {
@@ -181,9 +203,8 @@ public class TDMap {
 		}
 		
 		while(true) {
-			//ending is ([width] - 1, [end])
+			//ending is ([width] - 1, y)
 			if(xRunner + 1 == width) {
-				end = yRunner;
 				break;
 			}
 			
@@ -257,6 +278,7 @@ public class TDMap {
 		
 	}
 	
+	//Publicly accessible method for loading a user-selected file
 	public void loadMap() {
 		
 		JFileChooser fileChooser = new JFileChooser();
@@ -292,19 +314,6 @@ public class TDMap {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-		}
-	}
-	
-	//Handles drawing the map to a Graphics object
-	public void draw(Graphics g) {
-		for(int i = 0; i < width; i++) {
-			for(int j = 0; j < height; j++) {
-				g.setColor(Tile.getColor(tiles[i][j]));
-				g.fillRect(i * this.tileSize, 
-						j * this.tileSize, 
-						this.tileSize, 
-						this.tileSize);
-			}
 		}
 	}
 }

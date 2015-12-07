@@ -37,7 +37,7 @@ public class Enemy {
 	
 	//**************Constructor**************
 	
-	public Enemy(int rank, int newTileSize, TDMap tMap) {		
+	public Enemy(int rank, TDMap tMap) {		
 		switch(rank) {
 			case 0:
 				color = Color.GREEN.darker();
@@ -76,7 +76,7 @@ public class Enemy {
 		xCorners = tileMap.getXCorners();
 		yCorners = tileMap.getYCorners();
 		
-		tileSize = newTileSize;
+		tileSize = tileMap.getTileSize();
 		r = tileSize / 3;
 		
 		currentCorner = 0;
