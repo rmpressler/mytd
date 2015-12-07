@@ -101,7 +101,7 @@ public class GamePanel extends JPanel implements Runnable,
 		eManager = new EnemyManager(tileMap, this, player);
 		eManager.start();
 		
-		tManager = new TowerManager(PIXEL_WIDTH, PIXEL_HEIGHT, TILE_SIZE, player);
+		tManager = new TowerManager(this, TILE_SIZE, player);
 		
 		running = true;
 		

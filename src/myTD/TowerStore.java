@@ -13,15 +13,15 @@ public class TowerStore implements MouseListener{
 	
 	Tower[] storeTowers;
 	
-	public TowerStore(int parentWidth, int parentHeight, int tileSize, int numTowerTypes) {
+	public TowerStore(GamePanel newGame, int tileSize, int numTowerTypes) {
 		
 		//set store to 80% of parent width and 15% of height
 		storeWidth = tileSize * numTowerTypes;
 		storeHeight = tileSize;
 		
 		//Position 70% of the way down the panel, 10% from the left edge
-		x = (int)((parentWidth - storeWidth) / 2);
-		y = (int)(parentHeight - tileSize);
+		x = (int)((newGame.PIXEL_WIDTH - storeWidth) / 2);
+		y = (int)(newGame.PIXEL_HEIGHT - tileSize);
 		
 		//fill tower types
 		int towerX = x;

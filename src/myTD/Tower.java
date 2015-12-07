@@ -8,6 +8,7 @@ public class Tower {
 	
 	//******************Fields*****************
 	
+	//Properties
 	private int x;								//x coordinate in pixels
 	private int y;								//y coordinate in pixels
 	private int type;							//type of tower. See constructor for valid types
@@ -19,19 +20,20 @@ public class Tower {
 	private int cost;							//cost
 	private Color color1;						//color of tower
 	private Color color2;						//color of tower during placing
-	
-	private long lastShot;						//last shot in milliseconds
-	
 	private int tileSize;						//tile size in pixels
 	private int towerSize;						//tower size in pixels
 	
+	//Firing data
+	private long lastShot;						//last shot in milliseconds
 	public boolean placing;						//true when tower is being placed
 	public boolean storeMode;					//true when tower is only to be displayed in store
 	private boolean firing;						//true when firing
 	
+	//Mouse location
 	private int mouseX;							//x coords of mouse, used during placing
 	private int mouseY;							//y coords of mouse, used during placing
 	
+	//References to related objects
 	private Enemy target;
 	private ArrayList<Projectile> projectiles;	//Tracks projectiles fired from this tower	
 	

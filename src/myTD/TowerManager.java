@@ -6,49 +6,41 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 public class TowerManager implements MouseListener {
+	
+	//******************Fields*****************
+	
+	//Properties
+	private int tileSize;
+	
+	//State data
 	ArrayList<Tower> towers;
 	Tower placingTower;
-	EnemyManager eManager;
 	private boolean placing;
-	private int tileSize;
-	private int balance;
+	
+	//References to related objects
 	private Player player;
 	
+	//Sub-components
 	TowerStore store;
 	
-	public TowerManager(int parentWidth, int parentHeight, int newTileSize, Player newPlayer) {
+	//*****************Constructor*****************
+	
+	public TowerManager(GamePanel game, int newTileSize, Player newPlayer) {
+		
+		//Init
 		towers = new ArrayList<Tower>();
+		
 		placingTower = null;
+		
 		tileSize = newTileSize;
-		placing = false;
 		player = newPlayer;
 		
-		store = new TowerStore(parentWidth, parentHeight, newTileSize, 2);
-	}
-	
-	public int getPlacingTowerCost() {
-		return placingTower.getCost();
-	}
-	
-	public boolean placing() {
-		return placing;
-	}
-	
-	public void createTower(int newType, int x, int y) {
-		placingTower = new Tower(newType, x, y, tileSize, false);
-		placing = true;
-	}
-	
-	public void placeTower() { 
-		placingTower.place();
-		towers.add(placingTower);
-		placingTower = null;
 		placing = false;
+		
+		store = new TowerStore(game, newTileSize, 2);
 	}
 	
-	public boolean isInStore(int checkX, int checkY) {
-		return store.isInStore(checkX, checkY);
-	}
+	//********************Update and draw*********************
 	
 	public void update(int x, int y, ArrayList<Enemy> livingEnemies) {
 		
@@ -71,25 +63,37 @@ public class TowerManager implements MouseListener {
 		
 		store.draw(g);
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+	
+	//**************************Getters**********************************
+	
+	public int getPlacingTowerCost() {
+		return placingTower.getCost();
+	}
+	
+	//************************Game methods*******************************
+	
+	public boolean placing() {
+		return placing;
+	}
+	
+	public void createTower(int newType, int x, int y) {
+		placingTower = new Tower(newType, x, y, tileSize, false);
+		placing = true;
+	}
+	
+	public void placeTower() { 
+		placingTower.place();
+		towers.add(placingTower);
+		placingTower = null;
+		placing = false;
+	}
+	
+	public boolean isInStore(int checkX, int checkY) {
+		return store.isInStore(checkX, checkY);
 	}
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	//****************************Event handlers****************************
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
 		Tower clickedTower = store.getTowerAt(e.getX(), e.getY());
@@ -98,10 +102,12 @@ public class TowerManager implements MouseListener {
 			createTower(clickedTower.getType(), e.getX(), e.getY());
 		}
 	}
-
 	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseClicked(MouseEvent e) {}
+	@Override
+	public void mouseEntered(MouseEvent e) {}
+	@Override
+	public void mouseExited(MouseEvent e) {}
+	@Override
+	public void mouseReleased(MouseEvent e) {}
 }
