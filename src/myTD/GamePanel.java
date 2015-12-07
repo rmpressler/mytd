@@ -24,7 +24,7 @@ public class GamePanel extends JPanel implements Runnable,
 	
 	public final int TILE_SIZE = PIXEL_WIDTH / WIDTH;
 	
-	private final int START_MONEY = 200;
+	private final int START_MONEY = 500;
 	private final int START_LIVES = 10;
 	
 	private static int FPS = 30;					//FPS cap

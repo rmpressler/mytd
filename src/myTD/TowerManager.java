@@ -23,7 +23,7 @@ public class TowerManager implements MouseListener {
 		placing = false;
 		player = newPlayer;
 		
-		store = new TowerStore(parentWidth, parentHeight, newTileSize, 1);
+		store = new TowerStore(parentWidth, parentHeight, newTileSize, 2);
 	}
 	
 	public int getPlacingTowerCost() {

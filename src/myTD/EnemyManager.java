@@ -164,9 +164,9 @@ public class EnemyManager {
 			enemies = 4;
 			type = 3;
 		}
-			
-		wave = new Enemy[enemies];
 		
+		//Create new Enemy[] in wave and initialize
+		wave = new Enemy[enemies];
 		for(int i = 0; i < enemies; i++) {
 			wave[i] = new Enemy(type, game.TILE_SIZE, tileMap);
 		}
