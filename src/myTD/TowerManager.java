@@ -121,6 +121,14 @@ public class TowerManager implements MouseListener,
 	@Override
 	public void mousePressed(MouseEvent e) {
 		
+		//Check for an in-store click
+		Tower clickedTower = store.getTowerAt(e.getX(), e.getY());
+		if(clickedTower != null && clickedTower.getCost() <= player.getMoney()) {
+			//Start placing new tower
+			createTower(clickedTower.getType(), e.getX(), e.getY());
+			return;
+		}
+		
 		//If placing and location is valid, place and quit
 		if(placing) {
 			//If right click, cancel operation
@@ -146,14 +154,6 @@ public class TowerManager implements MouseListener,
 		
 		//Do nothing if right-click
 		if(SwingUtilities.isRightMouseButton(e)) {
-			return;
-		}
-		
-		//Check for an in-store click
-		Tower clickedTower = store.getTowerAt(e.getX(), e.getY());
-		if(clickedTower != null && clickedTower.getCost() <= player.getMoney()) {
-			//Start placing new tower
-			createTower(clickedTower.getType(), e.getX(), e.getY());
 			return;
 		}
 		

@@ -67,7 +67,7 @@ public class Enemy {
 				break;
 			case 4:
 				color = Color.WHITE;
-				speed = 2;
+				speed = 3;
 				life = 60;
 				reward = 90;
 				break;

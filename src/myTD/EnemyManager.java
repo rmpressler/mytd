@@ -149,8 +149,8 @@ public class EnemyManager {
 		int type = 0;
 		
 		if(currentWave == 0) {
-			enemies = 5;
-			type = 0;
+			enemies = 11;
+			type = 4;
 		}
 		else if(currentWave == 1) {
 			enemies = 6;
