@@ -149,19 +149,23 @@ public class EnemyManager {
 		int type = 0;
 		
 		if(currentWave == 0) {
-			enemies = 3;
+			enemies = 5;
 			type = 0;
 		}
 		else if(currentWave == 1) {
-			enemies = 3;
+			enemies = 6;
 			type = 1;
 		}
 		else if(currentWave == 2) {
-			enemies = 3;
+			enemies = 7;
 			type = 2;
 		}
 		else if(currentWave == 3) {
-			enemies = 4;
+			enemies = 8;
+			type = 3;
+		}
+		else if(currentWave == 4) {
+			enemies = 9;
 			type = 3;
 		}
 		

@@ -8,8 +8,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
-public class GamePanel extends JPanel implements Runnable, 
-												MouseMotionListener{
+public class GamePanel extends JPanel implements Runnable {
 	
 	//**********************Fields************************
 
@@ -45,10 +44,6 @@ public class GamePanel extends JPanel implements Runnable,
 	
 	double averageFPS;							//Actual FPS achieved
 	
-	//State variables
-	private int mouseX;
-	private int mouseY;
-	
 	//**********************Constructor************************
 	
 	public GamePanel() {
@@ -61,7 +56,7 @@ public class GamePanel extends JPanel implements Runnable,
 	
 	public void update() {
 		eManager.update();
-		tManager.update(mouseX, mouseY, eManager.getLiveEnemies());
+		tManager.update(eManager.getLiveEnemies());
 	}
 	
 	public void render() {
@@ -114,7 +109,7 @@ public class GamePanel extends JPanel implements Runnable,
 		running = true;
 
 		addMouseListener(tManager);
-		addMouseMotionListener(this);
+		addMouseMotionListener(tManager);
 		
 		averageFPS = 0;
 		
@@ -157,14 +152,4 @@ public class GamePanel extends JPanel implements Runnable,
 			}
 		}
 	}
-	
-	//**********************Event handlers************************
-	
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		mouseX = e.getX();
-		mouseY = e.getY();
-	}
-	@Override
-	public void mouseDragged(MouseEvent e) {}
 }

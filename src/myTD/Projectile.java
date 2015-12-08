@@ -23,12 +23,12 @@ public class Projectile {
 	
 	//**********************Constructor************************
 	
-	public Projectile(int newX, int newY, int newDmg, Enemy newTarget) {
+	public Projectile(int newX, int newY, int newR, int newDmg, Enemy newTarget) {
 		
 		//init
 		x = newX;
 		y = newY;
-		r = 5;
+		r = newR;
 		speed = 5;
 		dmg = newDmg;
 		

@@ -3,11 +3,13 @@ package myTD;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
 import javax.swing.SwingUtilities;
 
-public class TowerManager implements MouseListener {
+public class TowerManager implements MouseListener,
+									MouseMotionListener {
 	
 	//******************Fields*****************
 	
@@ -15,10 +17,12 @@ public class TowerManager implements MouseListener {
 	private int tileSize;				//Tile size in pixels from GamePanel
 	
 	//State data
-	private ArrayList<Tower> towers;			//Array containing current towers being tracked
-	private Tower selectedTower;					//Holds currently selected tower.
-	private Tower placingTower;					//Tower currently being placed by player.
-	private boolean placing;					//True when player is placing a tower.
+	private int mouseX;					//x coordinate of mouse for moving while placing
+	private int mouseY;					//y coordinate of mouse for moving while placing
+	private ArrayList<Tower> towers;	//Array containing current towers being tracked
+	private Tower selectedTower;		//Holds currently selected tower.
+	private Tower placingTower;			//Tower currently being placed by player.
+	private boolean placing;			//True when player is placing a tower.
 	
 	//References to related objects
 	private Player player;				//Reference to player for handling money.
@@ -48,10 +52,10 @@ public class TowerManager implements MouseListener {
 	
 	//********************Update and draw*********************
 	
-	public void update(int x, int y, ArrayList<Enemy> livingEnemies) {
+	public void update(ArrayList<Enemy> livingEnemies) {
 		
 		if(placing) {
-			placingTower.update(x, y, null);
+			placingTower.update(mouseX, mouseY, null);
 		}
 		for(Tower tower: towers) {
 			tower.update(0, 0, livingEnemies);
@@ -155,7 +159,8 @@ public class TowerManager implements MouseListener {
 		
 		//Check for option window click
 		if(selectedTower != null) {
-			if(selectedTower.coordsInOption(e.getX(), e.getY())) {
+			if(selectedTower.coordsInOption(e.getX(), e.getY()) &&
+					selectedTower.getCost() <= player.getMoney()) {
 				//Option clicked, upgrade
 				player.subtractMoney(selectedTower.getCost());
 				selectedTower.upgrade();
@@ -188,6 +193,13 @@ public class TowerManager implements MouseListener {
 			selectedTower = null;
 		}
 	}
+	
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		mouseX = e.getX();
+		mouseY = e.getY();
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {}
 	@Override
@@ -196,4 +208,6 @@ public class TowerManager implements MouseListener {
 	public void mouseExited(MouseEvent e) {}
 	@Override
 	public void mouseReleased(MouseEvent e) {}
+	@Override
+	public void mouseDragged(MouseEvent e) {}
 }
