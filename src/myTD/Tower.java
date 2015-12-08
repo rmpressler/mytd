@@ -64,7 +64,7 @@ public class Tower {
 				color1 = new Color(255, 0, 0);
 				color2 = new Color(255, 0, 0, 180);
 				range = (int)(2.5 * tileSize);
-				dmg = 1;
+				dmg = 10;
 				attackType = PROJECTILE;
 				rateOfFire = 1000;
 				cost = 100;
@@ -73,7 +73,7 @@ public class Tower {
 				color1 = new Color(0, 0, 255);
 				color2 = new Color(0, 0, 255, 180);
 				range = (int)(1.5 * tileSize);
-				dmg = 2;
+				dmg = 20;
 				attackType = NOVA;
 				rateOfFire = 2000;
 				cost = 150;
@@ -231,6 +231,14 @@ public class Tower {
 	}
 	
 	//****************Getters*******************
+	
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}
 	
 	public int getCost() {
 		return cost;

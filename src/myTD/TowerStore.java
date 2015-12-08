@@ -22,7 +22,7 @@ public class TowerStore{
 		
 		//set store to 80% of parent width and 15% of height
 		storeWidth = tileSize * numTowerTypes;
-		storeHeight = tileSize;
+		storeHeight = tileSize + 15;		//Buffer to leave room for price
 		
 		//Position at bottom of panel
 		x = (int)((game.PIXEL_WIDTH - storeWidth) / 2);
@@ -42,10 +42,13 @@ public class TowerStore{
 	
 	public void draw(Graphics g) {
 		g.setColor(Color.BLACK);
-		g.drawRect(x,  y,  storeWidth,  storeHeight);
+		g.drawRect(x,  y - 15,  storeWidth,  storeHeight);
 		
 		for(Tower tower: storeTowers) {
 			tower.draw(g);
+			
+			//Draw price
+			g.drawString("$" + tower.getCost(), tower.getX(), tower.getY() - 5);
 		}
 	}
 	

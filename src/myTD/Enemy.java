@@ -19,11 +19,13 @@ public class Enemy {
 	//Rank and color are correlated
 	private int speed;					//Speed at a rate of pixels/frame
 	private int life;					//Units of HP
+	private int startLife;				//Starting life; Used to track % life.
 	private int reward;					//Money rewarded for killing
 	private Color color;				//Color of unit
 	private boolean isAlive;			//False if dead
 	private boolean spawned;			//Set to true once spawn() is called and false once dead
 	private boolean justDied;			//Set to true in the frame that it died, then false after.
+	private boolean hit;				//True if hit this frame.
 	
 	private TDMap tileMap;				//Hold reference to tileMap being used in game.
 	
@@ -42,34 +44,36 @@ public class Enemy {
 			case 0:
 				color = Color.GREEN.darker();
 				speed = 1;
-				life = 2;
+				life = 20;
 				reward = 50;
 				break;
 			case 1:
 				color = Color.BLUE;
 				speed = 2;
-				life = 3;
+				life = 30;
 				reward = 60;
 				break;
 			case 2:
 				color = Color.RED;
 				speed = 2;
-				life = 4;
+				life = 40;
 				reward = 70;
 				break;
 			case 3:
 				color = Color.YELLOW;
 				speed = 2;
-				life = 5;
+				life = 50;
 				reward = 80;
 				break;
 			case 4:
 				color = Color.WHITE;
 				speed = 2;
-				life = 6;
+				life = 60;
 				reward = 90;
 				break;
 		}
+		
+		startLife = life;
 		
 		tileMap = tMap;
 		
@@ -83,6 +87,7 @@ public class Enemy {
 		
 		justDied = false;
 		spawned = false;
+		hit = false;
 		isAlive = true;
 	}
 	
@@ -135,11 +140,36 @@ public class Enemy {
 	}
 	
 	public void draw(Graphics g) {
-		g.setColor(color);
+		
+		//Draw enemy
+		if(hit) {
+			g.setColor(Color.WHITE);
+			hit = false;
+		}
+		else {
+			g.setColor(color);
+		}
 		g.fillOval(x,  y, r * 2, r * 2);
 		
 		g.setColor(color.darker());
 		g.drawOval(x,  y, r * 2, r * 2);
+		
+		//Life bar
+		//Draw remaining life
+		double lifePct = (double)life/startLife;
+		int barLeftWidth = (int)((r * 2) * lifePct);
+		g.setColor(Color.GREEN);
+		g.fillRect(x, y - 10, barLeftWidth, 5);
+		
+		//Draw lost life
+		double lostLifePct = 1 - lifePct;
+		int barRightWidth = (int)((r * 2) * lostLifePct);
+		g.setColor(Color.RED);
+		g.fillRect(x + barLeftWidth, y - 10, barRightWidth, 5);
+		
+		//Border
+		g.setColor(Color.BLACK);
+		g.drawRect(x,  y - 10, r * 2, 5);
 	}
 	
 	//**************Getters*****************
@@ -249,6 +279,7 @@ public class Enemy {
 			life = 0;
 			return true;
 		}
+		hit = true;
 		return false;
 	}
 	
