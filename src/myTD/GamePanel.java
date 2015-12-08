@@ -4,13 +4,11 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable, 
-												MouseListener, 
 												MouseMotionListener{
 	
 	//**********************Fields************************
@@ -111,11 +109,10 @@ public class GamePanel extends JPanel implements Runnable,
 		eManager = new EnemyManager(tileMap, this, player);
 		eManager.start();
 		
-		tManager = new TowerManager(this, TILE_SIZE, player);
+		tManager = new TowerManager(this, tileMap, player);
 		
 		running = true;
-		
-		addMouseListener(this);
+
 		addMouseListener(tManager);
 		addMouseMotionListener(this);
 		
@@ -164,32 +161,10 @@ public class GamePanel extends JPanel implements Runnable,
 	//**********************Event handlers************************
 	
 	@Override
-	public void mousePressed(MouseEvent e) {
-		if(tManager.placing()) {
-			player.subtractMoney(tManager.getPlacingTowerCost());
-			int xTile = e.getX() / TILE_SIZE;
-			int yTile = e.getY() / TILE_SIZE;
-			if(!tileMap.isPath(xTile, yTile) &&
-					!tManager.isInStore(e.getX(), e.getY())) {
-				tManager.placeTower();
-			}
-		}
-	}
-	
-	@Override
 	public void mouseMoved(MouseEvent e) {
 		mouseX = e.getX();
 		mouseY = e.getY();
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {}
-	@Override
-	public void mouseEntered(MouseEvent e) {}
-	@Override
-	public void mouseExited(MouseEvent e) {}
-	@Override
-	public void mouseReleased(MouseEvent e) {}
 	@Override
 	public void mouseDragged(MouseEvent e) {}
 }

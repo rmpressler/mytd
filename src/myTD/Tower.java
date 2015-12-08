@@ -15,6 +15,7 @@ public class Tower {
 	private int attackType;						//Uses constants below to set attack type
 	private int level;							//current level of tower
 	private int dmg;							//damage per hit
+	private int dmgIncrement;					//added damage per level
 	private int rateOfFire;						//rate of fire in milliseconds between shots
 	private int range;							//Range in pixels
 	private int cost;							//cost
@@ -22,6 +23,14 @@ public class Tower {
 	private Color color2;						//color of tower during placing
 	private int tileSize;						//tile size in pixels
 	private int towerSize;						//tower size in pixels
+	private int optionWindowX;					//x coordinate of option window in pixels
+	private int optionWindowY;					//y coordinate of option window in pixels
+	private int optionWindowWidth;				//width of option window in pixels
+	private int optionWindowHeight;				//height of option window in pixels
+	private int dmgIncrementModifier;			//multiplier being applied to dmgIncrement.
+	
+	//State data
+	private boolean selected;				//True if options should be showing
 	
 	//Firing data
 	private long lastShot;						//last shot in milliseconds
@@ -46,17 +55,19 @@ public class Tower {
 	
 	public Tower(int newType, int startX, int startY, int newTileSize, boolean thisStoreMode) {
 		
-		//Initialize variables
+		//Init
 		x = startX;
 		y = startY;
 		tileSize = newTileSize;
 		towerSize = (int) (tileSize * .8);
 		placing = true;
 		firing = false;
+		selected = false;
 		storeMode = thisStoreMode;
 		type = newType;
 		level = 1;
 		lastShot = System.nanoTime() / 1000000;
+		dmgIncrementModifier = 10;
 		
 		//Types
 		switch(type) {
@@ -64,7 +75,8 @@ public class Tower {
 				color1 = new Color(255, 0, 0);
 				color2 = new Color(255, 0, 0, 180);
 				range = (int)(2.5 * tileSize);
-				dmg = 10;
+				dmg = 1 * dmgIncrementModifier;
+				dmgIncrement = 1 * dmgIncrementModifier;
 				attackType = PROJECTILE;
 				rateOfFire = 1000;
 				cost = 100;
@@ -73,7 +85,8 @@ public class Tower {
 				color1 = new Color(0, 0, 255);
 				color2 = new Color(0, 0, 255, 180);
 				range = (int)(1.5 * tileSize);
-				dmg = 20;
+				dmg = 2 * dmgIncrementModifier;
+				dmgIncrement = 1 * dmgIncrementModifier;
 				attackType = NOVA;
 				rateOfFire = 2000;
 				cost = 150;
@@ -210,6 +223,20 @@ public class Tower {
 			g.setColor(Color.BLACK);
 			g.drawString(Integer.toString(level), x + (towerSize / 2) - 3, y + (towerSize / 2) + 4);
 			
+			if(selected) {
+				g.setColor(Color.WHITE);
+				g.fillRect(optionWindowX, optionWindowY, optionWindowWidth, optionWindowHeight);
+				g.drawRect(x,  y,  towerSize, towerSize);
+				g.setColor(Color.BLACK);
+				g.drawRect(optionWindowX, optionWindowY, optionWindowWidth, optionWindowHeight);
+				g.drawString("UPGRADE", x - 12, y - 30);
+				g.drawString("" + cost, x + 5, y - 15);
+			}
+			else {
+				g.setColor(color1.darker());
+				g.drawRect(x,  y,  towerSize, towerSize);
+			}
+			
 			//Draw projectiles
 			if(!storeMode && attackType == PROJECTILE) {
 				//draw projectiles
@@ -250,9 +277,17 @@ public class Tower {
 	
 	//***************Game methods*****************
 	
+	public void select() {
+		selected = true;
+	}
+	
+	public void deselect() {
+		selected = false;
+	}
+	
 	public void upgrade() {
 		level++;
-		dmg++;
+		dmg += dmgIncrement;
 		cost += 100;
 	}
 	
@@ -265,6 +300,12 @@ public class Tower {
 	public void place () {
 		x = toTowerCoord(mouseX);
 		y = toTowerCoord(mouseY);
+		
+		optionWindowX = x - 15;
+		optionWindowY = y - 50;
+		optionWindowWidth = towerSize + 30;
+		optionWindowHeight = 40;
+		
 		placing = false;
 	}
 	
@@ -306,6 +347,18 @@ public class Tower {
 				coordX < x + tileSize * 0.8 &&
 				coordY > y &&
 				coordY < y + tileSize * 0.8) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public boolean coordsInOption(int coordX, int coordY) {
+		if(coordX > optionWindowX &&
+				coordX < optionWindowX + optionWindowWidth * 0.8 &&
+				coordY > optionWindowY &&
+				coordY < optionWindowY + optionWindowHeight * 0.8) {
 			return true;
 		}
 		else {
