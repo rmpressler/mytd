@@ -13,13 +13,14 @@ public class EnemyManager {
 	//Enemy-related variables
 	private Enemy[] wave;					//Holds the wave's Enemy s
 	private ArrayList<Enemy> liveEnemies;	// TODO Find a better way to do this
+	private boolean waveIsRunning;
 	
 	//State variables
 	private boolean running;				//True when start() is called
 	private int currentWave;				//Current wave #
 	private int totalWaves;					//Total waves to spawn
-	private int timer;						//Times spawning of next wave
 	private int spawnDelay;					//Time between enemy spawns during wave (ms)
+	private long lastWaveEnd;				//nanoTime() of last wave ending
 	
 	//Spawn-related variables
 	private boolean spawning;				//True while enemies are being sent
@@ -41,13 +42,14 @@ public class EnemyManager {
 		player = newPlayer;
 		tileMap = newTileMap;
 		
+		waveIsRunning = false;
+		
 		totalWaves = 10;
 		
 		wave = null;
 		
 		spawning = false;
-		
-		timer = 0;
+
 		liveEnemies = new ArrayList<Enemy>();
 		
 		lastSpawn = System.nanoTime();
@@ -58,6 +60,8 @@ public class EnemyManager {
 		buttonHeight = (int)(GamePanel.PIXEL_HEIGHT * 0.05);
 		buttonX = GamePanel.PIXEL_WIDTH - (buttonWidth + 10);
 		buttonY = 10;
+		
+		lastWaveEnd = System.nanoTime();
 	}
 	
 	//********************Update and draw*********************
@@ -71,8 +75,8 @@ public class EnemyManager {
 		
 		//300 frames = 10 seconds
 		//create and send next wave
-		if(timer == 300) {
-			timer = 0;
+		if(!waveIsRunning && (System.nanoTime() - lastWaveEnd) / 1000000 >= 10000) {
+			waveIsRunning = true;
 			sendWave();
 		}
 		
@@ -119,10 +123,9 @@ public class EnemyManager {
 			
 			if(waveEnemyCount == 0) {
 				wave = null;
+				waveIsRunning = false;
+				lastWaveEnd = System.nanoTime();
 			}
-		}
-		else {
-			timer++;
 		}
 	}
 
@@ -141,12 +144,24 @@ public class EnemyManager {
 			}
 		}
 		else {
+			int timer = 10 - ((int)((System.nanoTime() - lastWaveEnd) / 1000000000));
+			if(timer == 3 ||
+					timer == 1) {
+				g.setColor(Color.RED);
+			}
+			else{
+				g.setColor(Color.BLACK);
+			}
+			String timerString = "Next wave in " + timer;
+			int textWidth = g.getFontMetrics().stringWidth(timerString);
+			g.drawString(timerString, (GamePanel.PIXEL_WIDTH - textWidth) / 2, 15);
+			
 			g.setColor(Color.BLUE);
 			g.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
 			g.setColor(Color.WHITE);
 			Font oldFont = g.getFont();
 			g.setFont(new Font("Verdana", Font.BOLD, 12));
-			int textWidth = g.getFontMetrics().stringWidth("SPAWN");
+			textWidth = g.getFontMetrics().stringWidth("SPAWN");
 			int stringX = (buttonWidth - textWidth) / 2;
 			int stringY = buttonHeight / 2;
 			g.drawString("SPAWN", buttonX + stringX, buttonY + stringY + 5);
@@ -242,7 +257,6 @@ public class EnemyManager {
 				x <= buttonX + buttonWidth &&
 				y >= buttonY &&
 				y <= buttonY + buttonHeight) {
-			timer = 0;
 			sendWave();
 		}
 	}
