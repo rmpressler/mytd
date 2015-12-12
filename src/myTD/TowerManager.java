@@ -2,14 +2,11 @@ package myTD;
 
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
 import javax.swing.SwingUtilities;
 
-public class TowerManager implements MouseListener,
-									MouseMotionListener {
+public class TowerManager {
 	
 	//******************Fields*****************
 	
@@ -33,7 +30,7 @@ public class TowerManager implements MouseListener,
 	
 	//*****************Constructor*****************
 	
-	public TowerManager(GamePanel game, TDMap tMap, Player newPlayer) {
+	public TowerManager(TDMap tMap, Player newPlayer) {
 		
 		//Init
 		towers = new ArrayList<Tower>();
@@ -47,7 +44,7 @@ public class TowerManager implements MouseListener,
 		
 		placing = false;
 		
-		store = new TowerStore(game, tileSize, 2);
+		store = new TowerStore(tileSize, 2);
 	}
 	
 	//********************Update and draw*********************
@@ -118,7 +115,6 @@ public class TowerManager implements MouseListener,
 
 	//****************************Event handlers****************************
 	
-	@Override
 	public void mousePressed(MouseEvent e) {
 		
 		//Check for an in-store click
@@ -194,20 +190,8 @@ public class TowerManager implements MouseListener,
 		}
 	}
 	
-	@Override
 	public void mouseMoved(MouseEvent e) {
 		mouseX = e.getX();
 		mouseY = e.getY();
 	}
-	
-	@Override
-	public void mouseClicked(MouseEvent e) {}
-	@Override
-	public void mouseEntered(MouseEvent e) {}
-	@Override
-	public void mouseExited(MouseEvent e) {}
-	@Override
-	public void mouseReleased(MouseEvent e) {}
-	@Override
-	public void mouseDragged(MouseEvent e) {}
 }

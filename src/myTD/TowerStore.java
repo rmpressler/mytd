@@ -18,15 +18,15 @@ public class TowerStore{
 	
 	//**********************Constructor************************
 	
-	public TowerStore(GamePanel game, int tileSize, int numTowerTypes) {
+	public TowerStore(int tileSize, int numTowerTypes) {
 		
 		//set store to 80% of parent width and 15% of height
 		storeWidth = tileSize * numTowerTypes;
 		storeHeight = tileSize + 15;		//Buffer to leave room for price
 		
 		//Position at bottom of panel
-		x = (int)((game.PIXEL_WIDTH - storeWidth) / 2);
-		y = (int)(game.PIXEL_HEIGHT - tileSize);
+		x = (int)((GamePanel.PIXEL_WIDTH - storeWidth) / 2);
+		y = (int)(GamePanel.PIXEL_HEIGHT - tileSize);
 		
 		//fill tower types
 		int towerX = x;

@@ -1,52 +1,37 @@
 package myTD;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
-public class GamePanel extends JPanel implements Runnable,
-													MouseListener {
+public class GamePanel extends JPanel implements Runnable, MouseListener, MouseMotionListener {
 	
 	//**********************Fields************************
 
 	private static final long serialVersionUID = 1L;
 	
 	//Constants
-	public final int WIDTH = 15;
-	public final int HEIGHT = 15;
+	public static final int WIDTH = 15;
+	public static final int HEIGHT = 15;
 	
-	public final int PIXEL_WIDTH = 600;
-	public final int PIXEL_HEIGHT = 600;
+	public static final int PIXEL_WIDTH = 600;
+	public static final int PIXEL_HEIGHT = 600;
 	
-	public final int TILE_SIZE = PIXEL_WIDTH / WIDTH;
-	
-	private final int START_MONEY = 500;
-	private final int START_LIVES = 10;
+	public static final int TILE_SIZE = PIXEL_WIDTH / WIDTH;
 	
 	private static int FPS = 30;				//FPS cap
 	
 	//State data
-	private int gameState;
-	
-	//State constants
-	private static final int STATE_MENU = 0;
-	private static final int STATE_GAME = 1;
-	//private static final int STATE_OVER = 2;
-	
-	//Game component objects
-	private TDMap tileMap;
-	private EnemyManager eManager;
-	private TowerManager tManager;
-	private Player player;
+	private GameStateManager gsm;
 	
 	//Thread related
 	private Thread thread;						//Main game loop thread
-	private boolean running;					//Flag tracking whether game running
+	volatile private boolean running;					//Flag tracking whether game running
 	
 	//Graphics related
 	BufferedImage image;						//Back buffer - all writing is done to this
@@ -58,41 +43,16 @@ public class GamePanel extends JPanel implements Runnable,
 	
 	public GamePanel() {
 		setPreferredSize(new Dimension(PIXEL_WIDTH, PIXEL_HEIGHT));
-		gameState = STATE_MENU;
 	}
 	
 	//**********************Update and draw************************
-
-	private void menuUpdate() {
-	}
-	
-	private void menuRender() {
-		graphicsBuffer.setColor(Color.GREEN);
-		graphicsBuffer.fillRect(0, 0, PIXEL_WIDTH, PIXEL_HEIGHT);
-		graphicsBuffer.setColor(Color.BLACK);
-		graphicsBuffer.drawString("Click anywhere to play", PIXEL_WIDTH / 2 - 50, PIXEL_HEIGHT / 2 + 5);
-	}
-	
-	private void menuDraw() {
-		Graphics g = this.getGraphics();
-		g.drawImage(image,  0,  0, null);
-		g.dispose();
-	}
 	
 	public void update() {
-		eManager.update();
-		tManager.update(eManager.getLiveEnemies());
-		
-		if(player.getLives() <= 0) {
-			running = false;
-		}
+		gsm.update();
 	}
 	
 	public void render() {
-		tileMap.draw(graphicsBuffer);
-		eManager.draw(graphicsBuffer);
-		tManager.draw(graphicsBuffer);
-		player.draw(graphicsBuffer);
+		gsm.draw(graphicsBuffer);
 	}
 	
 	//Draws ImageBuffer to screen
@@ -114,141 +74,75 @@ public class GamePanel extends JPanel implements Runnable,
 			thread = new Thread(this);
 			thread.start();
 		}
+		
 	}
 	
 	//Called when thread starts, 
 	@Override
 	public void run() {
+		//Create graphics buffer (back buffer)
+		image = new BufferedImage(PIXEL_WIDTH, PIXEL_HEIGHT, BufferedImage.TYPE_INT_RGB);
+		graphicsBuffer = (Graphics2D) image.getGraphics();
 		
-		if(gameState == STATE_MENU) {
-			//Create graphics buffer (back buffer)
-			image = new BufferedImage(PIXEL_WIDTH, PIXEL_HEIGHT, BufferedImage.TYPE_INT_RGB);
-			graphicsBuffer = (Graphics2D) image.getGraphics();
+		gsm = new GameStateManager();
+		
+		running = true;
+
+		addMouseListener(this);
+		addMouseMotionListener(this);
+		
+		averageFPS = 0;
+		
+		int frameCount = 1;
+		long startTime;
+		long elapsed;
+		long frameTime = 1000 / FPS;
+		
+		long totalTime = 0;
+		
+		while(running) {
 			
-			addMouseListener(this);
+			startTime = System.nanoTime();
 			
-			running = true;
+			update();
+			render();
+			draw();
 			
-			averageFPS = 0;
+			elapsed = (System.nanoTime() - startTime) / 1000000;
 			
-			int frameCount = 1;
-			long startTime;
-			long elapsed;
-			long frameTime = 1000 / FPS;
-			
-			long totalTime = 0;
-			
-			while(running) {
-				
-				startTime = System.nanoTime();
-				
-				menuUpdate();
-				menuRender();
-				menuDraw();
-				
-				elapsed = (System.nanoTime() - startTime) / 1000000;
-				
-				//FPS throttling
-				if(elapsed < frameTime) {
-					try {
-						Thread.sleep(frameTime - elapsed);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-				
-				
-				totalTime += System.nanoTime() - startTime;
-				
-				if(frameCount == 30) {
-					averageFPS = 1000.0 / ((totalTime / frameCount) / 1000000);
-					totalTime = 0;
-					frameCount = 1;
-				}
-				else {
-					frameCount++;
+			//FPS throttling
+			if(elapsed < frameTime) {
+				try {
+					Thread.sleep(frameTime - elapsed);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			}
-		}
-		else if(gameState == STATE_GAME) {
-			//Create graphics buffer (back buffer)
-			image = new BufferedImage(PIXEL_WIDTH, PIXEL_HEIGHT, BufferedImage.TYPE_INT_RGB);
-			graphicsBuffer = (Graphics2D) image.getGraphics();
 			
-			//Create map object and load map file
-			tileMap = new TDMap(PIXEL_WIDTH, PIXEL_HEIGHT, TILE_SIZE, false);
-			tileMap.loadMap("C:\\Users\\r.pressler\\Java\\Games Workspace\\myTD\\largemap.tdm");
 			
-			player = new Player(START_MONEY, START_LIVES);
+			totalTime += System.nanoTime() - startTime;
 			
-			eManager = new EnemyManager(tileMap, this, player);
-			eManager.start();
-			
-			tManager = new TowerManager(this, tileMap, player);
-			
-			running = true;
-	
-			addMouseListener(tManager);
-			addMouseMotionListener(tManager);
-			
-			averageFPS = 0;
-			
-			int frameCount = 1;
-			long startTime;
-			long elapsed;
-			long frameTime = 1000 / FPS;
-			
-			long totalTime = 0;
-			
-			while(running) {
-				
-				startTime = System.nanoTime();
-				
-				update();
-				render();
-				draw();
-				
-				elapsed = (System.nanoTime() - startTime) / 1000000;
-				
-				//FPS throttling
-				if(elapsed < frameTime) {
-					try {
-						Thread.sleep(frameTime - elapsed);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-				
-				
-				totalTime += System.nanoTime() - startTime;
-				
-				if(frameCount == 30) {
-					averageFPS = 1000.0 / ((totalTime / frameCount) / 1000000);
-					totalTime = 0;
-					frameCount = 1;
-				}
-				else {
-					frameCount++;
-				}
+			if(frameCount == 30) {
+				averageFPS = 1000.0 / ((totalTime / frameCount) / 1000000);
+				totalTime = 0;
+				frameCount = 1;
+			}
+			else {
+				frameCount++;
 			}
 		}
 	}
-
-	//**********************Event handlers************************
+	
+	//**********************Event Handlers************************
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if(gameState == STATE_MENU) {
-			
-			running = false;
-			while(thread.isAlive()) {
-				
-			}
-			thread = null;
-			gameState = STATE_GAME;
-			thread = new Thread(this);
-			thread.start();
-		}
+		gsm.mousePressed(e);
+	}
+	
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		gsm.mouseMoved(e);
 	}
 
 	@Override
@@ -259,4 +153,6 @@ public class GamePanel extends JPanel implements Runnable,
 	public void mouseExited(MouseEvent e) {}
 	@Override
 	public void mouseReleased(MouseEvent e) {}
+	@Override
+	public void mouseDragged(MouseEvent e) {}
 }

@@ -71,6 +71,12 @@ public class Enemy {
 				life = 60;
 				reward = 90;
 				break;
+			case 5:
+				color = Color.GRAY;
+				speed = 3;
+				life = 70;
+				reward = 100;
+				break;
 		}
 		
 		startLife = life;

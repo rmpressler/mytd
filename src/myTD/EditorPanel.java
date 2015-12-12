@@ -15,6 +15,7 @@ public class EditorPanel extends JPanel {
 	JButton selectionButton;
 	JButton button0;
 	JButton button1;
+	JButton button2;
 	JButton saveButton;
 	
 	TileEditorPanel surfacePanel;
@@ -49,6 +50,14 @@ public class EditorPanel extends JPanel {
 			}
 		});
 		buttonPanel.add(button1);
+		
+		button2 = new JButton("Mountain");
+		button2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				setSelection(2);
+			}
+		});
+		buttonPanel.add(button2);
 		
 		saveButton = new JButton("Save Map");
 		buttonPanel.add(saveButton);

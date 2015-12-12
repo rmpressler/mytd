@@ -1,0 +1,60 @@
+package myTD;
+
+import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+
+public class PlayState extends GameState {
+	//Game component objects
+	private TDMap tileMap;
+	private EnemyManager eManager;
+	private TowerManager tManager;
+	private Player player;
+	
+	//Game settings
+	private final int START_MONEY = 500;
+	private final int START_LIVES = 10;
+	
+	public PlayState(GameStateManager gsm) {
+		this.gsm = gsm;
+		
+		//Create map object and load map file
+		tileMap = new TDMap(GamePanel.PIXEL_WIDTH, GamePanel.PIXEL_HEIGHT, GamePanel.TILE_SIZE, false);
+		tileMap.loadMap("C:\\Users\\r.pressler\\Java\\Games Workspace\\myTD\\map_with_mountains.tdm");
+		
+		player = new Player(START_MONEY, START_LIVES);
+		
+		eManager = new EnemyManager(tileMap, player);
+		eManager.start();
+		
+		tManager = new TowerManager(tileMap, player);
+	}
+
+	@Override
+	public void update() {
+		eManager.update();
+		tManager.update(eManager.getLiveEnemies());
+		
+		if(player.getLives() <= 0) {
+			gsm.setState(GameStateManager.MENUSTATE);;
+		}
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		tileMap.draw(g);
+		eManager.draw(g);
+		tManager.draw(g);
+		player.draw(g);
+	}
+	
+	@Override
+	public void mousePressed(MouseEvent e) {
+		tManager.mousePressed(e);
+		eManager.mousePressed(e);
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		tManager.mouseMoved(e);
+	}
+}
