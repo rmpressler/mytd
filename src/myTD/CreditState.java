@@ -3,15 +3,16 @@ package myTD;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 
 public class CreditState extends GameState {
 	String[] creditTitles = {
-			"Lead Developer"
+			"Lead Developer",
+			"Lead Designer"
 	};
 	String[] creditNames = {
+			"Richard Pressler",
 			"Richard Pressler"
 	};
 	
@@ -56,7 +57,7 @@ public class CreditState extends GameState {
 			String string = creditTitles[i];
 			int stringLength = g.getFontMetrics().stringWidth(string);
 			int stringX = (GamePanel.PIXEL_WIDTH - stringLength) / 2;
-			int stringY = baseY + (i * (int)(stringHeight * 1.2));
+			int stringY = baseY + (i * (int)(stringHeight * 2.5));
 			
 			g.drawString(creditTitles[i], stringX, stringY);
 			
@@ -65,7 +66,7 @@ public class CreditState extends GameState {
 			string = creditNames[i];
 			stringLength = g.getFontMetrics().stringWidth(string);
 			stringX = (GamePanel.PIXEL_WIDTH - stringLength) / 2;
-			stringY = baseY + (i * (int)(stringHeight * 1.2) + 25);
+			stringY = baseY + (i * (int)(stringHeight * 2.5) + 25);
 			
 			g.drawString(creditNames[i], stringX, stringY);
 		}
@@ -74,6 +75,11 @@ public class CreditState extends GameState {
 	}
 
 	@Override
+	public void keyPressed(int e) {
+		gsm.setState(GameStateManager.MENUSTATE);
+	}
+	
+	@Override
 	public void mousePressed(MouseEvent e) {}
 	@Override
 	public void mouseReleased(MouseEvent e) {}
@@ -81,9 +87,5 @@ public class CreditState extends GameState {
 	public void mouseMoved(MouseEvent e) {}
 	@Override
 	public void mouseDragged(MouseEvent e) {}
-	@Override
-	public void keyPressed(int e) {
-		gsm.setState(GameStateManager.MENUSTATE);
-	}
 
 }

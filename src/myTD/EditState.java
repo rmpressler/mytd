@@ -172,6 +172,14 @@ public class EditState extends GameState {
 			});
 			this.add(button2);
 			
+			JButton button3 = new JButton("Forest");
+			button3.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					setSelection(3);
+				}
+			});
+			this.add(button3);
+			
 			JButton saveButton = new JButton("Save Map");
 			saveButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {

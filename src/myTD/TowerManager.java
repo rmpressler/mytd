@@ -139,7 +139,7 @@ public class TowerManager {
 			int yTile = e.getY() / tileSize;
 			
 			//Check for valid tile and place
-			if(!tileMap.isPath(xTile, yTile) &&
+			if(tileMap.isPlaceable(xTile, yTile) &&
 					!isInStore(e.getX(), e.getY()) &&
 					getTowerAt(e.getX(), e.getY()) == null) {
 				player.subtractMoney(placingTower.getCost());

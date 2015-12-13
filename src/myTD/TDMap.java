@@ -1,10 +1,14 @@
 package myTD;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 
 public class TDMap {
@@ -19,6 +23,10 @@ public class TDMap {
 	private int tileSize;			//Tile size in pixels
 	private int start;				//Starting tile y coordinate (x is always 0)
 	private int tiles[][];			//Stores int values representing the tile types
+	
+	private BufferedImage grassImg;	
+	private BufferedImage treeImg;
+	private BufferedImage mountainImg;
 	
 	ArrayList<Integer> xCorners;	//x coordinates of each corner in tiles
 	ArrayList<Integer> yCorners;	//y coordinates of each corner in tiles
@@ -37,6 +45,14 @@ public class TDMap {
 		this.pixelHeight = newHeight;
 		this.tileSize = newTileSize;
 		this.editorMode = isEditorMode;
+		
+		try {
+			grassImg = ImageIO.read(new File("grass_40_40.png"));
+			treeImg = ImageIO.read(new File("tree_40_40.png"));
+			mountainImg = ImageIO.read(new File("mountain_40_40.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		//Initialize all tiles to -1 (whitespace)
 		this.tiles = new int[width][height];
@@ -59,11 +75,28 @@ public class TDMap {
 	public void draw(Graphics g) {
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
-				g.setColor(Tile.getColor(tiles[i][j]));
-				g.fillRect(i * this.tileSize, 
-						j * this.tileSize, 
-						this.tileSize, 
-						this.tileSize);
+				if(tiles[i][j] == 0) {
+					g.drawImage(grassImg, i * this.tileSize, 
+							j * this.tileSize, 
+							null);
+				}
+				else if(tiles[i][j] == 2) {
+					g.drawImage(mountainImg, i * this.tileSize, 
+							j * this.tileSize, 
+							null);
+				}
+				else if(tiles[i][j] == 3) {
+					g.drawImage(treeImg, i * this.tileSize, 
+							j * this.tileSize, 
+							null);
+				}
+				else {
+					g.setColor(Tile.getColor(tiles[i][j]));
+					g.fillRect(i * this.tileSize, 
+							j * this.tileSize, 
+							this.tileSize, 
+							this.tileSize);
+				}
 			}
 		}
 	}
@@ -112,6 +145,15 @@ public class TDMap {
 	}
 	
 	//**********************Game methods************************
+	
+	public boolean isPlaceable(int thisX, int thisY) {
+		if(tiles[thisX][thisY] == Tile.GRASS) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 	
 	//Detects if tile at (thisX, thisY) is a Tile.PATH tile 
 	public boolean isPath(int thisX, int thisY) {
