@@ -76,7 +76,6 @@ public class EnemyManager {
 		//300 frames = 10 seconds
 		//create and send next wave
 		if(!waveIsRunning && (System.nanoTime() - lastWaveEnd) / 1000000 >= 10000) {
-			waveIsRunning = true;
 			sendWave();
 		}
 		
@@ -187,6 +186,7 @@ public class EnemyManager {
 	
 	private void sendWave() {
 		spawning = true;
+		waveIsRunning = true;
 		
 		int enemies = 0;
 		int type = 0;
@@ -194,7 +194,7 @@ public class EnemyManager {
 		switch(currentWave) {
 		case 0:
 			enemies = 11;
-			type = 0;
+			type = 3;
 			break;
 		case 1:
 			enemies = 6;

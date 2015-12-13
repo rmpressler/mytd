@@ -12,6 +12,7 @@ public class GameStateManager {
 	public static final int PLAYSTATE = 1;
 	public static final int EDITSTATE = 2;
 	public static final int GAMEOVERSTATE = 3;
+	public static final int PAUSESTATE = 4;
 	
 	public GameStateManager() {
 		//Init
@@ -23,10 +24,14 @@ public class GameStateManager {
 		//Load list of game states
 		gameStates.add(new MenuState(this));
 		gameStates.add(new PlayState(this));
+		gameStates.add(new EditState(this));
+		gameStates.add(new GameOverState(this));
+		gameStates.add(new PauseState(this));
 	}
 	
 	public void setState(int state) {
 		currentState = state;
+		gameStates.get(currentState).init();
 	}
 	
 	public void update() {
@@ -43,5 +48,9 @@ public class GameStateManager {
 	
 	public void mouseMoved(MouseEvent e) {
 		gameStates.get(currentState).mouseMoved(e);
+	}
+	
+	public void keyPressed(int e) {
+		gameStates.get(currentState).keyPressed(e);
 	}
 }

@@ -3,13 +3,15 @@ package myTD;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
-public class GamePanel extends JPanel implements Runnable, MouseListener, MouseMotionListener {
+public class GamePanel extends JPanel implements Runnable, MouseListener, MouseMotionListener, KeyListener {
 	
 	//**********************Fields************************
 
@@ -75,6 +77,7 @@ public class GamePanel extends JPanel implements Runnable, MouseListener, MouseM
 			thread.start();
 		}
 		
+		this.requestFocusInWindow();
 	}
 	
 	//Called when thread starts, 
@@ -90,6 +93,7 @@ public class GamePanel extends JPanel implements Runnable, MouseListener, MouseM
 
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		addKeyListener(this);
 		
 		averageFPS = 0;
 		
@@ -144,6 +148,11 @@ public class GamePanel extends JPanel implements Runnable, MouseListener, MouseM
 	public void mouseMoved(MouseEvent e) {
 		gsm.mouseMoved(e);
 	}
+	
+	@Override
+	public void keyPressed(KeyEvent e) {
+		gsm.keyPressed(e.getKeyCode());
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {}
@@ -155,4 +164,8 @@ public class GamePanel extends JPanel implements Runnable, MouseListener, MouseM
 	public void mouseReleased(MouseEvent e) {}
 	@Override
 	public void mouseDragged(MouseEvent e) {}
+	@Override
+	public void keyReleased(KeyEvent arg0) {}
+	@Override
+	public void keyTyped(KeyEvent arg0) {}
 }
