@@ -30,8 +30,16 @@ public class GameStateManager {
 	}
 	
 	public void setState(int state) {
+		int oldState = currentState;
 		currentState = state;
-		gameStates.get(currentState).init();
+		
+		if(oldState != PAUSESTATE) {
+			gameStates.get(currentState).init();
+		}
+	}
+	
+	public GameState getState(int i) {
+		return gameStates.get(i);
 	}
 	
 	public void update() {
