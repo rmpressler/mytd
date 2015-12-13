@@ -95,15 +95,6 @@ public class TileEditorPanel extends JPanel implements MouseListener,
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent evt) {}
-
-	@Override
-	public void mouseEntered(MouseEvent evt) {}
-
-	@Override
-	public void mouseExited(MouseEvent evt) {}
-
-	@Override
 	public void mousePressed(MouseEvent evt) {
 		int x = evt.getX() / TILE_SIZE;
 		int y = evt.getY() / TILE_SIZE;
@@ -143,5 +134,11 @@ public class TileEditorPanel extends JPanel implements MouseListener,
 
 	@Override
 	public void mouseMoved(MouseEvent evt) {}
+	@Override
+	public void mouseClicked(MouseEvent evt) {}
+	@Override
+	public void mouseEntered(MouseEvent evt) {}
+	@Override
+	public void mouseExited(MouseEvent evt) {}
 	
 }

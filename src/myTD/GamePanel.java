@@ -153,6 +153,16 @@ public class GamePanel extends JPanel implements Runnable, MouseListener, MouseM
 	public void keyPressed(KeyEvent e) {
 		gsm.keyPressed(e.getKeyCode());
 	}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		gsm.mouseReleased(e);
+	}
+	
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		gsm.mouseDragged(e);
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {}
@@ -160,10 +170,6 @@ public class GamePanel extends JPanel implements Runnable, MouseListener, MouseM
 	public void mouseEntered(MouseEvent e) {}
 	@Override
 	public void mouseExited(MouseEvent e) {}
-	@Override
-	public void mouseReleased(MouseEvent e) {}
-	@Override
-	public void mouseDragged(MouseEvent e) {}
 	@Override
 	public void keyReleased(KeyEvent arg0) {}
 	@Override

@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 
 public class PauseState extends GameState {
 	private String[] options = {
@@ -95,5 +96,23 @@ public class PauseState extends GameState {
 	public void mousePressed(MouseEvent e) {}
 	@Override
 	public void mouseMoved(MouseEvent e) {}
+
+	@Override
+	public HashMap<String, String> getStateData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

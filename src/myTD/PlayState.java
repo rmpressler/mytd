@@ -3,6 +3,7 @@ package myTD;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 
 public class PlayState extends GameState {
 	//State data
@@ -48,7 +49,7 @@ public class PlayState extends GameState {
 		tManager.update(eManager.getLiveEnemies());
 		
 		if(player.getLives() <= 0) {
-			gsm.setState(GameStateManager.MENUSTATE);
+			gsm.setState(GameStateManager.GAMEOVERSTATE);
 		}
 	}
 
@@ -76,5 +77,24 @@ public class PlayState extends GameState {
 		if(e == KeyEvent.VK_ESCAPE) {
 			gsm.setState(GameStateManager.PAUSESTATE);
 		}
+	}
+
+	@Override
+	public HashMap<String, String> getStateData() {
+		HashMap<String, String> data = new HashMap<String, String>();
+		data.put("wave", Integer.toString(eManager.getWave()));
+		return data;
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

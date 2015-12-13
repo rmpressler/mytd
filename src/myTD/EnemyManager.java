@@ -134,6 +134,13 @@ public class EnemyManager {
 			return;
 		}
 		
+		Font oldFont = g.getFont();
+		g.setFont(new Font("Century Gothic", Font.PLAIN, 15));
+		g.setColor(Color.WHITE);
+		String waveString = "Current wave: " + currentWave;
+		int textWidth = g.getFontMetrics().stringWidth(waveString);
+		g.drawString(waveString, (GamePanel.PIXEL_WIDTH - textWidth) / 2, 15);
+		
 		//If there's a wave alive, draw each enemy
 		if(wave != null) {
 			for(int i = 0;i < wave.length;i++) {
@@ -143,6 +150,9 @@ public class EnemyManager {
 			}
 		}
 		else {
+			
+			/********************************Wave timer*********************************/
+			
 			int timer = 10 - ((int)((System.nanoTime() - lastWaveEnd) / 1000000000));
 			if(timer == 3 ||
 					timer == 1) {
@@ -151,27 +161,32 @@ public class EnemyManager {
 			else{
 				g.setColor(Color.BLACK);
 			}
+			g.setFont(oldFont);
 			String timerString = "Next wave in " + timer;
-			int textWidth = g.getFontMetrics().stringWidth(timerString);
-			g.drawString(timerString, (GamePanel.PIXEL_WIDTH - textWidth) / 2, 15);
+			textWidth = g.getFontMetrics().stringWidth(timerString);
+			g.drawString(timerString, (GamePanel.PIXEL_WIDTH - textWidth) / 2, 35);
 			
 			g.setColor(Color.BLUE);
 			g.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
 			g.setColor(Color.WHITE);
-			Font oldFont = g.getFont();
 			g.setFont(new Font("Verdana", Font.BOLD, 12));
 			textWidth = g.getFontMetrics().stringWidth("SPAWN");
 			int stringX = (buttonWidth - textWidth) / 2;
 			int stringY = buttonHeight / 2;
 			g.drawString("SPAWN", buttonX + stringX, buttonY + stringY + 5);
-			g.setFont(oldFont);
 		}
+		
+		g.setFont(oldFont);
 	}
 	
 	//**************Getters*****************
 	
 	public ArrayList<Enemy> getLiveEnemies() {
 		return liveEnemies;
+	}
+	
+	public int getWave() {
+		return currentWave;
 	}
 	
 	//***************Game methods*****************
