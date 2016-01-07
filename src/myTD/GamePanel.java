@@ -18,11 +18,11 @@ public class GamePanel extends JPanel implements Runnable, MouseListener, MouseM
 	private static final long serialVersionUID = 1L;
 	
 	//Constants
-	public static final int WIDTH = 15;
-	public static final int HEIGHT = 15;
+	public static final int WIDTH = 12;
+	public static final int HEIGHT = 12;
 	
-	public static final int PIXEL_WIDTH = 600;
-	public static final int PIXEL_HEIGHT = 600;
+	public static final int PIXEL_WIDTH = 576;
+	public static final int PIXEL_HEIGHT = 576;
 	
 	public static final int TILE_SIZE = PIXEL_WIDTH / WIDTH;
 	

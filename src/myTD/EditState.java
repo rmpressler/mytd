@@ -148,7 +148,7 @@ public class EditState extends GameState {
 		public ButtonPanel() {
 			this.setLayout(new GridLayout(4, 1));
 			
-			JButton button0 = new JButton("Grass");
+			JButton button0 = new JButton("Grass0");
 			button0.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					setSelection(0);
@@ -156,7 +156,7 @@ public class EditState extends GameState {
 			});
 			this.add(button0);
 			
-			JButton button1 = new JButton("Path");
+			JButton button1 = new JButton("Grass1");
 			button1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					setSelection(1);
@@ -164,7 +164,7 @@ public class EditState extends GameState {
 			});
 			this.add(button1);
 			
-			JButton button2 = new JButton("Mountain");
+			JButton button2 = new JButton("Grass2");
 			button2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					setSelection(2);
@@ -172,13 +172,77 @@ public class EditState extends GameState {
 			});
 			this.add(button2);
 			
-			JButton button3 = new JButton("Forest");
+			JButton button3 = new JButton("Grass3");
 			button3.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					setSelection(3);
 				}
 			});
 			this.add(button3);
+			
+			JButton button4 = new JButton("Grass4");
+			button4.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					setSelection(4);
+				}
+			});
+			this.add(button4);
+			
+			JButton button5 = new JButton("Grass5");
+			button5.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					setSelection(5);
+				}
+			});
+			this.add(button5);
+			
+			JButton button6 = new JButton("Grass6");
+			button6.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					setSelection(6);
+				}
+			});
+			this.add(button6);
+			
+			JButton button7 = new JButton("Grass7");
+			button7.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					setSelection(7);
+				}
+			});
+			this.add(button7);
+			
+			JButton button8 = new JButton("Grass8");
+			button8.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					setSelection(8);
+				}
+			});
+			this.add(button8);
+			
+			JButton button9 = new JButton("Path");
+			button9.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					setSelection(9);
+				}
+			});
+			this.add(button9);
+			
+			JButton button10 = new JButton("Mountain");
+			button10.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					setSelection(10);
+				}
+			});
+			this.add(button10);
+			
+			JButton button11 = new JButton("Forest");
+			button11.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					setSelection(11);
+				}
+			});
+			this.add(button11);
 			
 			JButton saveButton = new JButton("Save Map");
 			saveButton.addActionListener(new ActionListener() {

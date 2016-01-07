@@ -1,14 +1,10 @@
 package myTD;
 
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 
 public class TDMap {
@@ -23,10 +19,6 @@ public class TDMap {
 	private int tileSize;			//Tile size in pixels
 	private int start;				//Starting tile y coordinate (x is always 0)
 	private int tiles[][];			//Stores int values representing the tile types
-	
-	private BufferedImage grassImg;	
-	private BufferedImage treeImg;
-	private BufferedImage mountainImg;
 	
 	ArrayList<Integer> xCorners;	//x coordinates of each corner in tiles
 	ArrayList<Integer> yCorners;	//y coordinates of each corner in tiles
@@ -46,13 +38,7 @@ public class TDMap {
 		this.tileSize = newTileSize;
 		this.editorMode = isEditorMode;
 		
-		try {
-			grassImg = ImageIO.read(new File("grass_40_40.png"));
-			treeImg = ImageIO.read(new File("tree_40_40.png"));
-			mountainImg = ImageIO.read(new File("mountain_40_40.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Tile.init();
 		
 		//Initialize all tiles to -1 (whitespace)
 		this.tiles = new int[width][height];
@@ -75,18 +61,8 @@ public class TDMap {
 	public void draw(Graphics g) {
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
-				if(tiles[i][j] == 0) {
-					g.drawImage(grassImg, i * this.tileSize, 
-							j * this.tileSize, 
-							null);
-				}
-				else if(tiles[i][j] == 2) {
-					g.drawImage(mountainImg, i * this.tileSize, 
-							j * this.tileSize, 
-							null);
-				}
-				else if(tiles[i][j] == 3) {
-					g.drawImage(treeImg, i * this.tileSize, 
+				if(tiles[i][j] >= Tile.GRASS0 && tiles[i][j] <= Tile.PATH) {
+					g.drawImage(Tile.getImg(tiles[i][j]), i * this.tileSize, 
 							j * this.tileSize, 
 							null);
 				}
@@ -147,7 +123,7 @@ public class TDMap {
 	//**********************Game methods************************
 	
 	public boolean isPlaceable(int thisX, int thisY) {
-		if(tiles[thisX][thisY] == Tile.GRASS) {
+		if(tiles[thisX][thisY] >= Tile.GRASS0 && tiles[thisX][thisY] <= Tile.GRASS8) {
 			return true;
 		}
 		else {
@@ -251,6 +227,8 @@ public class TDMap {
 			}
 			
 			visited[xRunner][yRunner] = true;
+			System.out.println("Runner at " + xRunner + ", " + yRunner + ". Value = " + tiles[xRunner][yRunner]);
+			System.out.println("Tile to right value =  " + tiles[xRunner + 1][yRunner]);
 			
 			//if a new direction is to be taken, found a corner. Log it.
 			if(visited[xRunner + 1][yRunner] == false && 

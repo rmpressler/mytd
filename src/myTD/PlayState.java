@@ -28,7 +28,7 @@ public class PlayState extends GameState {
 	public void init() {
 		//Create map object and load map file
 		tileMap = new TDMap(GamePanel.PIXEL_WIDTH, GamePanel.PIXEL_HEIGHT, GamePanel.TILE_SIZE, false);
-		tileMap.loadMap("map_with_mountains.tdm");
+		tileMap.loadMap("new2.tdm");
 		
 		player = new Player(START_MONEY, START_LIVES);
 		
